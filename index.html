@@ -668,33 +668,39 @@
       <h3><i class="fas fa-star"></i> Accounts Needing Immediate Attention</h3>
       <p>These accounts have the highest number of missing videos, indicating critical bottlenecks in your production
         pipeline:</p>
-      <div
-        style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 15px; margin-top: 15px;">
-        <div class="stat-card" style="text-align: left; background: rgba(244, 67, 54, 0.1); border: 1px solid #f44336;">
-          <h3>Coty Marine</h3>
-          <p>4 required | 0 under revision | <span class="missing">4 missing</span></p>
-          <p><i class="fas fa-user"></i> Editor: Ramon</p>
-          <p><i class="fas fa-tag"></i> Category: Retail</p>
-        </div>
-        <div class="stat-card" style="text-align: left; background: rgba(244, 67, 54, 0.1); border: 1px solid #f44336;">
-          <h3>Cuzzie's Dispensary</h3>
-          <p>4 required | 0 under revision | <span class="missing">4 missing</span></p>
-          <p><i class="fas fa-user"></i> Editor: Ramon</p>
-          <p><i class="fas fa-tag"></i> Category: Food</p>
-        </div>
-        <div class="stat-card" style="text-align: left; background: rgba(244, 67, 54, 0.1); border: 1px solid #f44336;">
-          <h3>Supreme Deck Store</h3>
-          <p>3 required | 0 under revision | <span class="missing">3 missing</span></p>
-          <p><i class="fas fa-user"></i> Editor: Ramon</p>
-          <p><i class="fas fa-tag"></i> Category: Retail</p>
-        </div>
-        <div class="stat-card" style="text-align: left; background: rgba(244, 67, 54, 0.1); border: 1px solid #f44336;">
-          <h3>Napoli Pizza</h3>
-          <p>4 required | 0 under revision | <span class="missing">4 missing</span></p>
-          <p><i class="fas fa-user"></i> Editor: Chris</p>
-          <p><i class="fas fa-tag"></i> Category: Food</p>
-        </div>
+      <div id="urgent-accounts" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 15px; margin-top: 15px;">
+        <!-- Will be populated by JavaScript -->
       </div>
+      
+      <script>
+        // Populate urgent accounts (3 or more missing videos)
+        const urgentAccountsContainer = document.getElementById('urgent-accounts');
+        
+        // Filter and sort accounts by missing videos (descending)
+        const urgentAccounts = productionData
+          .map(account => ({
+            ...account,
+            missing: account.required - account.revision
+          }))
+          .filter(account => account.missing >= 3)
+          .sort((a, b) => b.missing - a.missing);
+
+        // Create cards for each urgent account
+        urgentAccounts.forEach(account => {
+          const card = document.createElement('div');
+          card.className = 'stat-card';
+          card.style.cssText = 'text-align: left; background: rgba(244, 67, 54, 0.1); border: 1px solid #f44336;';
+          
+          card.innerHTML = `
+            <h3>${account.account}</h3>
+            <p>${account.required} required | ${account.revision} under revision | <span class="missing">${account.missing} missing</span></p>
+            <p><i class="fas fa-user"></i> Editor: ${account.editor}</p>
+            <p><i class="fas fa-tag"></i> Category: ${account.category}</p>
+          `;
+          
+          urgentAccountsContainer.appendChild(card);
+        });
+      </script>
     </div>
 
     <footer class="footer">
@@ -704,382 +710,8 @@
     </footer>
   </div>
 
-  <script>
-    // Production data with category information
-    const productionData = [
-      {
-        account: "Avalon Medical Group",
-        required: 2,
-        revision: 0,
-        editor: "Ramon",
-        category: "Medical"
-      },
-      {
-        account: "Caldwell Seafood",
-        required: 3,
-        revision: 1,
-        editor: "Duno",
-        category: "Food"
-      },
-      {
-        account: "Coty Marine",
-        required: 4,
-        revision: 0,
-        editor: "Ramon",
-        category: "Retail"
-      },
-      {
-        account: "Cured & Co.",
-        required: 3,
-        revision: 0,
-        editor: "Ramon",
-        category: "Beauty"
-      },
-      {
-        account: "Cuzzie's Dispensary",
-        required: 4,
-        revision: 0,
-        editor: "Ramon",
-        category: "Food"
-      },
-      {
-        account: "East Coast Falcons",
-        required: 4,
-        revision: 0,
-        editor: "Freddy",
-        category: "Services"
-      },
-      {
-        account: "Frontier Funding",
-        required: 4,
-        revision: 0,
-        editor: "Chris",
-        category: "Services"
-      },
-      {
-        account: "Global Beauty Solutions (Was YK Salon)",
-        required: 2,
-        revision: 2,
-        editor: "Thais/Maddison",
-        category: "Beauty"
-      },
-      {
-        account: "Historic Blue Moon Hotel",
-        required: 3,
-        revision: 0,
-        editor: "Ramon",
-        category: "Services"
-      },
-      {
-        account: "Home Concepts by JD",
-        required: 4,
-        revision: 1,
-        editor: "Chris",
-        category: "Retail"
-      },
-      {
-        account: "J.A.B Enterprises",
-        required: 4,
-        revision: 0,
-        editor: "Freddy",
-        category: "Services"
-      },
-      {
-        account: "Jr's Express Car Wash",
-        required: 3,
-        revision: 0,
-        editor: "Duno",
-        category: "Food"
-      },
-      {
-        account: "Kaizen Karate USA",
-        required: 3,
-        revision: 0,
-        editor: "Chris",
-        category: "Services"
-      },
-      {
-        account: "Napoli Pizza",
-        required: 4,
-        revision: 0,
-        editor: "Chris",
-        category: "Food"
-      },
-      {
-        account: "NJ Heart and Vein",
-        required: 3,
-        revision: 0,
-        editor: "Ramon",
-        category: "Medical"
-      },
-      {
-        account: "NJ Pure",
-        required: 3,
-        revision: 0,
-        editor: "Chris",
-        category: "Services"
-      },
-      {
-        account: "Raw Fitness Lodi",
-        required: 3,
-        revision: 0,
-        editor: "Chris",
-        category: "Services"
-      },
-      {
-        account: "Sambal Irvington",
-        required: 3,
-        revision: 0,
-        editor: "Duno",
-        category: "Food"
-      },
-      {
-        account: "Supreme Deck Store",
-        required: 3,
-        revision: 0,
-        editor: "Ramon",
-        category: "Retail"
-      },
-      {
-        account: "Talk N Fix Wireless",
-        required: 2,
-        revision: 0,
-        editor: "Thais/Maddison",
-        category: "Services"
-      },
-      {
-        account: "Tenafly Oradell Dental Associates",
-        required: 2,
-        revision: 0,
-        editor: "Chris",
-        category: "Medical"
-      },
-      {
-        account: "The Rugelach Shop",
-        required: 4,
-        revision: 0,
-        editor: "Thais/Maddison",
-        category: "Food"
-      },
-      {
-        account: "Vegas NJ",
-        required: 1,
-        revision: 1,
-        editor: "Duno",
-        category: "Food"
-      }
-    ];
-
-    // Calculate totals
-    const totals = productionData.reduce((acc, item) => {
-      acc.required += item.required;
-      acc.revision += item.revision;
-      return acc;
-    }, { required: 0, revision: 0 });
-
-    totals.missing = totals.required - totals.revision;
-    const editors = [...new Set(productionData.map(item => item.editor))];
-    const categories = [...new Set(productionData.map(item => item.category))];
-
-    // Update stats
-    document.getElementById('total-required').textContent = totals.required;
-    document.getElementById('total-revision').textContent = totals.revision;
-    document.getElementById('total-missing').textContent = totals.missing;
-    document.getElementById('active-editors').textContent = editors.length;
-
-    // Populate table with category data
-    const tableBody = document.getElementById('production-table');
-    productionData.forEach(item => {
-      const missing = item.required - item.revision;
-      const progress = item.required > 0 ? Math.round((item.revision / item.required) * 100) : 0;
-
-      const row = document.createElement('tr');
-      row.innerHTML = `
-                <td class="account">${item.account}</td>
-                <td class="required">${item.required}</td>
-                <td class="revision">${item.revision}</td>
-                <td class="missing">${missing}</td>
-                <td class="editor">${item.editor}</td>
-                <td class="category">${item.category}</td>
-                <td>
-                    <div class="progress-container">
-                        <div class="progress-bar" style="width: ${progress}%"></div>
-                    </div>
-                    <div class="progress-label">${progress}%</div>
-                </td>
-            `;
-      tableBody.appendChild(row);
-    });
-
-    // Set current date
-    const now = new Date();
-    document.getElementById('current-date').textContent = now.toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    });
-
-    // Editor Distribution Chart (Pie)
-    const editorData = {
-      labels: ['Ramon', 'Duno', 'Freddy', 'Chris', 'Thais/Maddison'],
-      datasets: [{
-        data: [
-          productionData.filter(item => item.editor === 'Ramon').reduce((sum, item) => sum + item.required, 0),
-          productionData.filter(item => item.editor === 'Duno').reduce((sum, item) => sum + item.required, 0),
-          productionData.filter(item => item.editor === 'Freddy').reduce((sum, item) => sum + item.required, 0),
-          productionData.filter(item => item.editor === 'Chris').reduce((sum, item) => sum + item.required, 0),
-          productionData.filter(item => item.editor === 'Thais/Maddison').reduce((sum, item) => sum + item.required, 0)
-        ],
-        backgroundColor: [
-          '#4fc3f7',
-          '#ff9800',
-          '#9c27b0',
-          '#4caf50',
-          '#e91e63'
-        ]
-      }]
-    };
-
-    new Chart(document.getElementById('editor-distribution'), {
-      type: 'pie',
-      data: editorData,
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-          legend: {
-            position: 'right',
-            labels: {
-              color: '#fff',
-              font: {
-                size: 12
-              }
-            }
-          },
-          tooltip: {
-            callbacks: {
-              label: function (context) {
-                const value = context.parsed;
-                const total = context.dataset.data.reduce((a, b) => a + b, 0);
-                const percentage = Math.round((value / total) * 100);
-                return `${context.label}: ${value} (${percentage}%)`;
-              }
-            }
-          }
-        }
-      }
-    });
-
-    // Editor Workload Chart (Bar)
-    const workloadData = {
-      labels: ['Ramon', 'Duno', 'Freddy', 'Chris', 'Thais/Maddison'],
-      datasets: [
-        {
-          label: 'Required Videos',
-          data: [
-            productionData.filter(item => item.editor === 'Ramon').reduce((sum, item) => sum + item.required, 0),
-            productionData.filter(item => item.editor === 'Duno').reduce((sum, item) => sum + item.required, 0),
-            productionData.filter(item => item.editor === 'Freddy').reduce((sum, item) => sum + item.required, 0),
-            productionData.filter(item => item.editor === 'Chris').reduce((sum, item) => sum + item.required, 0),
-            productionData.filter(item => item.editor === 'Thais/Maddison').reduce((sum, item) => sum + item.required, 0)
-          ],
-          backgroundColor: '#4fc3f7'
-        },
-        {
-          label: 'Missing Videos',
-          data: [
-            productionData.filter(item => item.editor === 'Ramon').reduce((sum, item) => sum + (item.required - item.revision), 0),
-            productionData.filter(item => item.editor === 'Duno').reduce((sum, item) => sum + (item.required - item.revision), 0),
-            productionData.filter(item => item.editor === 'Freddy').reduce((sum, item) => sum + (item.required - item.revision), 0),
-            productionData.filter(item => item.editor === 'Chris').reduce((sum, item) => sum + (item.required - item.revision), 0),
-            productionData.filter(item => item.editor === 'Thais/Maddison').reduce((sum, item) => sum + (item.required - item.revision), 0)
-          ],
-          backgroundColor: '#f44336'
-        }
-      ]
-    };
-
-    new Chart(document.getElementById('editor-workload'), {
-      type: 'bar',
-      data: workloadData,
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        scales: {
-          y: {
-            beginAtZero: true,
-            title: {
-              display: true,
-              text: 'Number of Videos'
-            }
-          }
-        },
-        plugins: {
-          legend: {
-            position: 'top',
-            labels: {
-              color: '#fff'
-            }
-          },
-          tooltip: {
-            mode: 'index',
-            intersect: false,
-            callbacks: {
-              label: function (context) {
-                return `${context.dataset.label}: ${context.parsed.y}`;
-              }
-            }
-          }
-        }
-      }
-    });
-
-    // Add filter functionality
-    document.addEventListener('DOMContentLoaded', function () {
-      const editorFilter = document.getElementById('editor-filter');
-      const categoryFilter = document.getElementById('category-filter');
-      const tableRows = document.querySelectorAll('#production-table tr');
-
-      // Function to filter table rows
-      function filterTable() {
-        const selectedEditor = editorFilter.value;
-        const selectedCategory = categoryFilter.value;
-
-        tableRows.forEach(row => {
-          if (row.tagName !== 'TR') return;
-
-          const editorCell = row.querySelector('.editor');
-          const categoryCell = row.querySelector('.category');
-
-          if (!editorCell || !categoryCell) return;
-
-          const editor = editorCell.textContent.trim();
-          const category = categoryCell.textContent.trim();
-
-          let showRow = true;
-
-          // Apply editor filter
-          if (selectedEditor !== 'all') {
-            showRow = showRow && (editor === selectedEditor);
-          }
-
-          // Apply category filter
-          if (selectedCategory !== 'all') {
-            showRow = showRow && (category === selectedCategory);
-          }
-
-          row.style.display = showRow ? '' : 'none';
-        });
-      }
-
-      // Add event listeners to filters
-      editorFilter.addEventListener('change', filterTable);
-      categoryFilter.addEventListener('change', filterTable);
-
-      // Initial filter application
-      filterTable();
-    });
-  </script>
+  <script src="assets/js/data.js"></script>
+  <script src="assets/js/dashboard.js"></script>
 </body>
 
 </html>
