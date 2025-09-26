@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Video Production Dashboard</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #1a2a6c, #2c3e50);
+      color: #fff;
+      min-height: 100vh;
+      padding: 20px;
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    header {
+      text-align: center;
+      padding: 25px 0;
+      margin-bottom: 30px;
+      position: relative;
+    }
+
+    header h1 {
+      font-size: 2.8rem;
+      margin-bottom: 10px;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+    }
+
+    header h1 i {
+      color: #4fc3f7;
+    }
+
+    header p {
+      color: #e0e0e0;
+      font-size: 1.2rem;
+      max-width: 800px;
+      margin: 0 auto;
+      line-height: 1.6;
+      font-weight: 300;
+    }
+
+    .stats-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+
+    .stat-card {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border-radius: 15px;
+      padding: 25px;
+      text-align: center;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+    }
+
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #4fc3f7, #4caf50);
+    }
+
+    .stat-card i {
+      font-size: 2.8rem;
+      margin-bottom: 18px;
+      display: block;
+      color: #4fc3f7;
+    }
+
+    .stat-card h3 {
+      font-size: 1.25rem;
+      margin-bottom: 12px;
+      color: #a0d2eb;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-weight: 600;
+    }
+
+    .stat-card .value {
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .stat-card .label {
+      color: #e0e0e0;
+      font-size: 0.95rem;
+      font-weight: 500;
+    }
+
+    .charts-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+      gap: 25px;
+      margin-bottom: 30px;
+    }
+
+    .chart-card {
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(10px);
+      border-radius: 15px;
+      padding: 20px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .chart-card h2 {
+      text-align: center;
+      margin-bottom: 15px;
+      color: #4fc3f7;
+      font-size: 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .chart-card h2 i {
+      color: #4caf50;
+    }
+
+    .chart-wrapper {
+      height: 300px;
+      position: relative;
+    }
+
+    .table-container {
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(10px);
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      margin-bottom: 30px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      color: #fff;
+    }
+
+    thead {
+      background: rgba(0, 0, 0, 0.2);
+    }
+
+    th {
+      padding: 18px 15px;
+      text-align: left;
+      font-weight: 600;
+      font-size: 1.1rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    th::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, #4fc3f7, #4caf50);
+    }
+
+    tbody tr {
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      transition: background 0.2s ease;
+    }
+
+    tbody tr:hover {
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    td {
+      padding: 15px;
+      font-weight: 500;
+    }
+
+    .account {
+      font-weight: 600;
+      color: #4fc3f7;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .account i {
+      color: #4caf50;
+    }
+
+    .required,
+    .revision,
+    .missing {
+      text-align: center;
+      font-weight: 600;
+      padding: 5px 10px;
+      border-radius: 20px;
+      font-size: 0.95rem;
+    }
+
+    .required {
+      background: rgba(76, 175, 80, 0.2);
+      color: #a5d6a7;
+      min-width: 60px;
+    }
+
+    .revision {
+      background: rgba(255, 193, 7, 0.2);
+      color: #ffe082;
+      min-width: 60px;
+    }
+
+    .missing {
+      background: rgba(244, 67, 54, 0.2);
+      color: #ef9a9a;
+      min-width: 60px;
+    }
+
+    .editor {
+      font-style: italic;
+      color: #bb86fc;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .editor i {
+      color: #bb86fc;
+    }
+
+    .progress-container {
+      height: 8px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 4px;
+      overflow: hidden;
+      margin-top: 8px;
+    }
+
+    .progress-bar {
+      height: 100%;
+      background: linear-gradient(90deg, #4caf50, #8bc34a);
+      border-radius: 4px;
+      transition: width 0.5s ease;
+    }
+
+    .progress-label {
+      text-align: center;
+      font-size: 0.85rem;
+      margin-top: 4px;
+      color: #a0d2eb;
+    }
+
+    .highlight {
+      background: rgba(76, 175, 80, 0.15);
+      border-left: 3px solid #4caf50;
+    }
+
+    .priority-badge {
+      background: rgba(244, 67, 54, 0.2);
+      color: #ef9a9a;
+      padding: 3px 8px;
+      border-radius: 12px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      display: inline-block;
+      margin-left: 5px;
+    }
+
+    .insight-card {
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(10px);
+      border-radius: 15px;
+      padding: 20px;
+      margin-bottom: 25px;
+      border-left: 4px solid #4caf50;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+    }
+
+    .insight-card h3 {
+      color: #4fc3f7;
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .insight-card p {
+      color: #e0e0e0;
+      margin-bottom: 10px;
+    }
+
+    .insight-card ul {
+      padding-left: 20px;
+    }
+
+    .insight-card li {
+      margin-bottom: 8px;
+      color: #e0e0e0;
+    }
+
+    .insight-card li::before {
+      content: "•";
+      color: #4caf50;
+      font-weight: bold;
+      display: inline-block;
+      width: 1em;
+      margin-left: -1em;
+      margin-right: 0.5em;
+    }
+
+    .footer {
+      text-align: center;
+      padding: 20px;
+      color: #a0d2eb;
+      font-size: 0.9rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      margin-top: 20px;
+    }
+
+    @media (max-width: 1024px) {
+      .charts-container {
+        grid-template-columns: 1fr;
+      }
+
+      .stat-card {
+        padding: 20px;
+      }
+
+      .stat-card .value {
+        font-size: 2.2rem;
+      }
+    }
+
+    @media (max-width: 768px) {
+      header h1 {
+        font-size: 2.2rem;
+      }
+
+      .stat-card {
+        padding: 18px;
+      }
+
+      .stat-card .value {
+        font-size: 2rem;
+      }
+
+      th,
+      td {
+        padding: 12px 8px;
+        font-size: 0.9rem;
+      }
+
+      .required,
+      .revision,
+      .missing {
+        min-width: 50px;
+        font-size: 0.85rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .stat-card {
+        padding: 15px;
+      }
+
+      .stat-card .value {
+        font-size: 1.8rem;
+      }
+
+      .stat-card h3 {
+        font-size: 1.1rem;
+      }
+
+      .progress-container {
+        height: 6px;
+      }
+
+      .progress-bar {
+        height: 100%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <header>
+      <h1><i class="fas fa-video"></i> Video Production Dashboard</h1>
+      <p>Track video production progress across all client accounts. Analyze workloads, bottlenecks, and performance
+        metrics to optimize your workflow.</p>
+    </header>
+
+    <!-- Summary Statistics -->
+    <div class="stats-container">
+      <div class="stat-card">
+        <i class="fas fa-tasks"></i>
+        <h3>Total Required Videos</h3>
+        <div class="value" id="total-required">70</div>
+        <div class="label">All videos needed across accounts</div>
+      </div>
+      <div class="stat-card">
+        <i class="fas fa-sync-alt"></i>
+        <h3>Videos Under Revision</h3>
+        <div class="value" id="total-revision">5</div>
+        <div class="label">Videos currently in review process</div>
+      </div>
+      <div class="stat-card">
+        <i class="fas fa-exclamation-circle"></i>
+        <h3>Missing Videos</h3>
+        <div class="value" id="total-missing">65</div>
+        <div class="label">Videos that need to be created</div>
+      </div>
+      <div class="stat-card">
+        <i class="fas fa-users"></i>
+        <h3>Active Editors</h3>
+        <div class="value" id="active-editors">6</div>
+        <div class="label">Editors currently working on projects</div>
+      </div>
+    </div>
+
+    <!-- Key Insights -->
+    <div class="insight-card">
+      <h3><i class="fas fa-lightbulb"></i> Production Insights</h3>
+      <p>Based on current data, here are key observations about your video production workflow:</p>
+      <ul>
+        <li><strong>Workload Imbalance:</strong> Chris handles the most required videos (23), while Ramon and Chris both
+          have high workloads (22 and 23 respectively), creating potential bottlenecks.</li>
+        <li><strong>Revision Patterns:</strong> Global Beauty Solutions has the highest revision rate (100% of required
+          videos), suggesting potential quality issues or feedback loops.</li>
+        <li><strong>High-Priority Accounts:</strong> Several accounts like Coty Marine, Cuzzie's Dispensary, and Supreme
+          Deck Store have the highest missing videos (4 each), indicating urgent attention needed.</li>
+        <li><strong>Editor Efficiency:</strong> Ramon has zero videos in revision but all required videos missing,
+          suggesting he's either not started or waiting for client feedback.</li>
+        <li><strong>Collaboration Opportunity:</strong> Thais/Maddison handles accounts with significant revision needs
+          (Global Beauty Solutions), while Chris handles accounts with high missing volumes.</li>
+      </ul>
+    </div>
+
+    <!-- Data Visualizations -->
+    <div class="charts-container">
+      <div class="chart-card">
+        <h2><i class="fas fa-chart-pie"></i> Editor Distribution</h2>
+        <div class="chart-wrapper">
+          <canvas id="editor-distribution"></canvas>
+        </div>
+      </div>
+
+      <div class="chart-card">
+        <h2><i class="fas fa-chart-bar"></i> Editor Workload Analysis</h2>
+        <div class="chart-wrapper">
+          <canvas id="editor-workload"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- Production Table -->
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Account</th>
+            <th>Required Videos</th>
+            <th>Under Revision</th>
+            <th>Missing Videos</th>
+            <th>Editor</th>
+            <th>Progress</th>
+          </tr>
+        </thead>
+        <tbody id="production-table">
+          <!-- Data will be populated by JavaScript -->
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Top Accounts with Highest Missing Videos -->
+    <div class="insight-card">
+      <h3><i class="fas fa-star"></i> Accounts Needing Immediate Attention</h3>
+      <p>These accounts have the highest number of missing videos, indicating critical bottlenecks in your production
+        pipeline:</p>
+      <div
+        style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 15px; margin-top: 15px;">
+        <div class="stat-card" style="text-align: left; background: rgba(244, 67, 54, 0.1); border: 1px solid #f44336;">
+          <h3>Coty Marine</h3>
+          <p>4 required | 0 under revision | <span class="missing">4 missing</span></p>
+          <p><i class="fas fa-user"></i> Editor: Ramon</p>
+        </div>
+        <div class="stat-card" style="text-align: left; background: rgba(244, 67, 54, 0.1); border: 1px solid #f44336;">
+          <h3>Cuzzie's Dispensary</h3>
+          <p>4 required | 0 under revision | <span class="missing">4 missing</span></p>
+          <p><i class="fas fa-user"></i> Editor: Ramon</p>
+        </div>
+        <div class="stat-card" style="text-align: left; background: rgba(244, 67, 54, 0.1); border: 1px solid #f44336;">
+          <h3>Supreme Deck Store</h3>
+          <p>3 required | 0 under revision | <span class="missing">3 missing</span></p>
+          <p><i class="fas fa-user"></i> Editor: Ramon</p>
+        </div>
+        <div class="stat-card" style="text-align: left; background: rgba(244, 67, 54, 0.1); border: 1px solid #f44336;">
+          <h3>Napoli Pizza</h3>
+          <p>4 required | 0 under revision | <span class="missing">4 missing</span></p>
+          <p><i class="fas fa-user"></i> Editor: Chris</p>
+        </div>
+      </div>
+    </div>
+
+    <footer class="footer">
+      <p>Video Production Dashboard • Last Updated: <span id="current-date"></span></p>
+      <p>Designed to help you identify bottlenecks, optimize editor workloads, and improve overall production efficiency
+      </p>
+    </footer>
+  </div>
+
+  <script>
+    // Production data
+    const productionData = [
+      { account: "Avalon Medical Group", required: 2, revision: 0, editor: "Ramon" },
+      { account: "Caldwell Seafood", required: 3, revision: 1, editor: "Duno" },
+      { account: "Coty Marine", required: 4, revision: 0, editor: "Ramon" },
+      { account: "Cured & Co.", required: 3, revision: 0, editor: "Ramon" },
+      { account: "Cuzzie's Dispensary", required: 4, revision: 0, editor: "Ramon" },
+      { account: "East Coast Falcons", required: 4, revision: 0, editor: "Freddy" },
+      { account: "Frontier Funding", required: 4, revision: 0, editor: "Chris" },
+      { account: "Global Beauty Solutions (Was YK Salon)", required: 2, revision: 2, editor: "Thais/Maddison" },
+      { account: "Historic Blue Moon Hotel", required: 3, revision: 0, editor: "Ramon" },
+      { account: "Home Concepts by JD", required: 4, revision: 1, editor: "Chris" },
+      { account: "J.A.B Enterprises", required: 4, revision: 0, editor: "Freddy" },
+      { account: "Jr's Express Car Wash", required: 3, revision: 0, editor: "Duno" },
+      { account: "Kaizen Karate USA", required: 3, revision: 0, editor: "Chris" },
+      { account: "Napoli Pizza", required: 4, revision: 0, editor: "Chris" },
+      { account: "NJ Heart and Vein", required: 3, revision: 0, editor: "Ramon" },
+      { account: "NJ Pure", required: 3, revision: 0, editor: "Chris" },
+      { account: "Raw Fitness Lodi", required: 3, revision: 0, editor: "Chris" },
+      { account: "Sambal Irvington", required: 3, revision: 0, editor: "Duno" },
+      { account: "Supreme Deck Store", required: 3, revision: 0, editor: "Ramon" },
+      { account: "Talk N Fix Wireless", required: 2, revision: 0, editor: "Thais/Maddison" },
+      { account: "Tenafly Oradell Dental Associates", required: 2, revision: 0, editor: "Chris" },
+      { account: "The Rugelach Shop", required: 4, revision: 0, editor: "Thais/Maddison" },
+      { account: "Vegas NJ", required: 1, revision: 1, editor: "Duno" }
+    ];
+
+    // Calculate totals
+    const totals = productionData.reduce((acc, item) => {
+      acc.required += item.required;
+      acc.revision += item.revision;
+      return acc;
+    }, { required: 0, revision: 0 });
+
+    totals.missing = totals.required - totals.revision;
+    const editors = [...new Set(productionData.map(item => item.editor))];
+
+    // Update stats
+    document.getElementById('total-required').textContent = totals.required;
+    document.getElementById('total-revision').textContent = totals.revision;
+    document.getElementById('total-missing').textContent = totals.missing;
+    document.getElementById('active-editors').textContent = editors.length;
+
+    // Populate table
+    const tableBody = document.getElementById('production-table');
+    productionData.forEach(item => {
+      const missing = item.required - item.revision;
+      const progress = item.required > 0 ? Math.round((item.revision / item.required) * 100) : 0;
+
+      const row = document.createElement('tr');
+      row.innerHTML = `
+                <td class="account">${item.account}</td>
+                <td class="required">${item.required}</td>
+                <td class="revision">${item.revision}</td>
+                <td class="missing">${missing}</td>
+                <td class="editor">${item.editor}</td>
+                <td>
+                    <div class="progress-container">
+                        <div class="progress-bar" style="width: ${progress}%"></div>
+                    </div>
+                    <div class="progress-label">${progress}%</div>
+                </td>
+            `;
+      tableBody.appendChild(row);
+    });
+
+    // Set current date
+    const now = new Date();
+    document.getElementById('current-date').textContent = now.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+
+    // Editor Distribution Chart (Pie)
+    const editorData = {
+      labels: ['Ramon', 'Duno', 'Freddy', 'Chris', 'Thais/Maddison'],
+      datasets: [{
+        data: [
+          productionData.filter(item => item.editor === 'Ramon').reduce((sum, item) => sum + item.required, 0),
+          productionData.filter(item => item.editor === 'Duno').reduce((sum, item) => sum + item.required, 0),
+          productionData.filter(item => item.editor === 'Freddy').reduce((sum, item) => sum + item.required, 0),
+          productionData.filter(item => item.editor === 'Chris').reduce((sum, item) => sum + item.required, 0),
+          productionData.filter(item => item.editor === 'Thais/Maddison').reduce((sum, item) => sum + item.required, 0)
+        ],
+        backgroundColor: [
+          '#4fc3f7',
+          '#ff9800',
+          '#9c27b0',
+          '#4caf50',
+          '#e91e63'
+        ]
+      }]
+    };
+
+    new Chart(document.getElementById('editor-distribution'), {
+      type: 'pie',
+      data: editorData,
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            position: 'right',
+            labels: {
+              color: '#fff',
+              font: {
+                size: 12
+              }
+            }
+          },
+          tooltip: {
+            callbacks: {
+              label: function (context) {
+                const value = context.parsed;
+                const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                const percentage = Math.round((value / total) * 100);
+                return `${context.label}: ${value} (${percentage}%)`;
+              }
+            }
+          }
+        }
+      }
+    });
+
+    // Editor Workload Chart (Bar)
+    const workloadData = {
+      labels: ['Ramon', 'Duno', 'Freddy', 'Chris', 'Thais/Maddison'],
+      datasets: [
+        {
+          label: 'Required Videos',
+          data: [
+            productionData.filter(item => item.editor === 'Ramon').reduce((sum, item) => sum + item.required, 0),
+            productionData.filter(item => item.editor === 'Duno').reduce((sum, item) => sum + item.required, 0),
+            productionData.filter(item => item.editor === 'Freddy').reduce((sum, item) => sum + item.required, 0),
+            productionData.filter(item => item.editor === 'Chris').reduce((sum, item) => sum + item.required, 0),
+            productionData.filter(item => item.editor === 'Thais/Maddison').reduce((sum, item) => sum + item.required, 0)
+          ],
+          backgroundColor: '#4fc3f7'
+        },
+        {
+          label: 'Missing Videos',
+          data: [
+            productionData.filter(item => item.editor === 'Ramon').reduce((sum, item) => sum + (item.required - item.revision), 0),
+            productionData.filter(item => item.editor === 'Duno').reduce((sum, item) => sum + (item.required - item.revision), 0),
+            productionData.filter(item => item.editor === 'Freddy').reduce((sum, item) => sum + (item.required - item.revision), 0),
+            productionData.filter(item => item.editor === 'Chris').reduce((sum, item) => sum + (item.required - item.revision), 0),
+            productionData.filter(item => item.editor === 'Thais/Maddison').reduce((sum, item) => sum + (item.required - item.revision), 0)
+          ],
+          backgroundColor: '#f44336'
+        }
+      ]
+    };
+
+    new Chart(document.getElementById('editor-workload'), {
+      type: 'bar',
+      data: workloadData,
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          y: {
+            beginAtZero: true,
+            title: {
+              display: true,
+              text: 'Number of Videos'
+            }
+          }
+        },
+        plugins: {
+          legend: {
+            position: 'top',
+            labels: {
+              color: '#fff'
+            }
+          },
+          tooltip: {
+            mode: 'index',
+            intersect: false,
+            callbacks: {
+              label: function (context) {
+                return `${context.dataset.label}: ${context.parsed.y}`;
+              }
+            }
+          }
+        }
+      }
+    });
+  </script>
+</body>
+
+</html>
