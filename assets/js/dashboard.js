@@ -65,17 +65,43 @@
     if (elTotalMissing) elTotalMissing.textContent = totals.missing;
     if (elActiveEditors) elActiveEditors.textContent = editors.length;
 
-    // Populate table
+    // Table and filters logic
     const tableBody = document.getElementById("production-table");
-    if (tableBody) {
-      tableBody.innerHTML = "";
-      productionData.forEach((item) => {
+    const tableFooter = document.getElementById("production-table-footer");
+    const editorFilter = document.getElementById("editor-filter");
+    const categoryFilter = document.getElementById("category-filter");
+
+    function renderTable() {
+      const selectedEditor = editorFilter ? editorFilter.value : "all";
+      const selectedCategory = categoryFilter ? categoryFilter.value : "all";
+
+      const filteredData = productionData.filter((item) => {
+        const editorMatch =
+          selectedEditor === "all" || item.editor === selectedEditor;
+        const categoryMatch =
+          selectedCategory === "all" || item.category === selectedCategory;
+        return editorMatch && categoryMatch;
+      });
+
+      // Clear existing table content
+      if (tableBody) tableBody.innerHTML = "";
+      if (tableFooter) tableFooter.innerHTML = "";
+
+      let totalRequired = 0;
+      let totalRevision = 0;
+      let totalMissing = 0;
+
+      // Populate table rows
+      filteredData.forEach((item) => {
         const missing = item.missing;
+        totalRequired += item.required;
+        totalRevision += item.revision;
+        totalMissing += missing;
+
         const progress =
           item.required > 0
             ? Math.round((item.revision / item.required) * 100)
             : 0;
-
         const row = document.createElement("tr");
         row.innerHTML = `
           <td class="account">${item.account}</td>
@@ -91,9 +117,29 @@
             <div class="progress-label">${progress}%</div>
           </td>
         `;
-        tableBody.appendChild(row);
+        if (tableBody) tableBody.appendChild(row);
       });
+
+      // Populate table footer with totals
+      if (tableFooter) {
+        const footerRow = document.createElement("tr");
+        footerRow.style.fontWeight = "bold";
+        footerRow.innerHTML = `
+          <td>Total</td>
+          <td class="required">${totalRequired}</td>
+          <td class="revision">${totalRevision}</td>
+          <td class="missing">${totalMissing}</td>
+          <td colspan="3"></td>
+        `;
+        tableFooter.appendChild(footerRow);
+      }
     }
+
+    if (editorFilter) editorFilter.addEventListener("change", renderTable);
+    if (categoryFilter) categoryFilter.addEventListener("change", renderTable);
+
+    // Initial render
+    renderTable();
 
     // Set current date
     const now = new Date();
@@ -210,37 +256,6 @@
     } catch (e) {
       console.error("Chart rendering failed", e);
     }
-
-    // Filters
-    (function setupFilters() {
-      const editorFilter = document.getElementById("editor-filter");
-      const categoryFilter = document.getElementById("category-filter");
-
-      function filterTable() {
-        const rows = document.querySelectorAll("#production-table tr");
-        const selectedEditor = editorFilter ? editorFilter.value : "all";
-        const selectedCategory = categoryFilter ? categoryFilter.value : "all";
-
-        rows.forEach((row) => {
-          const editorCell = row.querySelector(".editor");
-          const categoryCell = row.querySelector(".category");
-          if (!editorCell || !categoryCell) return;
-          const editor = editorCell.textContent.trim();
-          const category = categoryCell.textContent.trim();
-          let show = true;
-          if (selectedEditor !== "all")
-            show = show && editor === selectedEditor;
-          if (selectedCategory !== "all")
-            show = show && category === selectedCategory;
-          row.style.display = show ? "" : "none";
-        });
-      }
-
-      if (editorFilter) editorFilter.addEventListener("change", filterTable);
-      if (categoryFilter)
-        categoryFilter.addEventListener("change", filterTable);
-      filterTable();
-    })();
   }
 
   document.addEventListener("DOMContentLoaded", () => {
