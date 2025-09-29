@@ -108,7 +108,7 @@ window.productionData = [
     required: 4,
     revision: 0,
     missing: 4,
-    editor: "Chris",
+    editor: "Thais/Maddison",
     category: "Food",
   },
   {
@@ -140,7 +140,7 @@ window.productionData = [
     required: 3,
     revision: 0,
     missing: 3,
-    editor: "Duno",
+    editor: "",
     category: "Food",
   },
   {
@@ -164,7 +164,7 @@ window.productionData = [
     required: 2,
     revision: 0,
     missing: 2,
-    editor: "Chris",
+    editor: "Thais/Maddison",
     category: "Medical",
   },
   {
