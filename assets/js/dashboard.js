@@ -5,10 +5,7 @@
   function initDashboard(productionData) {
     productionData = productionData.map((item) => ({
       ...item,
-      missing:
-        typeof item.missing === "number"
-          ? item.missing
-          : item.required - (item.revision || 0),
+      missing: item.required - (item.revision || 0),
     }));
 
     // Populate urgent accounts (missing >= 3)
