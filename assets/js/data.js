@@ -17,7 +17,7 @@ window.productionData = [
   },
   {
     account: "Coty Marine",
-    required: 4,
+    required: 3,
     revision: 0,
     missing: 4,
     editor: "Ramon",
@@ -33,7 +33,7 @@ window.productionData = [
   },
   {
     account: "Cuzzie's Dispensary",
-    required: 4,
+    required: 3,
     revision: 0,
     missing: 4,
     editor: "Ramon",
@@ -41,7 +41,7 @@ window.productionData = [
   },
   {
     account: "East Coast Falcons",
-    required: 4,
+    required: 3,
     revision: 0,
     missing: 4,
     editor: "Freddy",
@@ -49,7 +49,7 @@ window.productionData = [
   },
   {
     account: "Frontier Funding",
-    required: 4,
+    required: 3,
     revision: 0,
     missing: 4,
     editor: "Chris",
@@ -73,7 +73,7 @@ window.productionData = [
   },
   {
     account: "Home Concepts by JD",
-    required: 4,
+    required: 3,
     revision: 1,
     missing: 3,
     editor: "Chris",
@@ -81,7 +81,7 @@ window.productionData = [
   },
   {
     account: "J.A.B Enterprises",
-    required: 4,
+    required: 3,
     revision: 0,
     missing: 4,
     editor: "Freddy",
@@ -105,7 +105,7 @@ window.productionData = [
   },
   {
     account: "Napoli Pizza",
-    required: 4,
+    required: 3,
     revision: 0,
     missing: 4,
     editor: "Thais/Maddison",
@@ -169,7 +169,7 @@ window.productionData = [
   },
   {
     account: "The Rugelach Shop",
-    required: 4,
+    required: 3,
     revision: 0,
     missing: 4,
     editor: "Thais/Maddison",
