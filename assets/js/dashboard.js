@@ -151,12 +151,8 @@
     // Charts
     try {
       const editorsList = [
-        "Ramon",
-        "Duno",
-        "Freddy",
-        "Chris",
-        "Thais/Maddison",
-      ];
+        ...new Set(productionData.map((item) => item.editor).filter(Boolean)),
+      ].sort();
       const editorTotals = editorsList.map((name) =>
         productionData
           .filter((item) => item.editor === name)
@@ -179,6 +175,9 @@
               "#9c27b0",
               "#4caf50",
               "#e91e63",
+              "#f44336",
+              "#00bcd4",
+              "#8bc34a",
             ],
           },
         ],
